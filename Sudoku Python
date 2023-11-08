@@ -1,0 +1,2 @@
+font1 = pygame.font.SysFont("montserrat", 40)
+font2 = pygame.font.SysFont("montserrat", 20)
