@@ -53,9 +53,5 @@ if __name__ == "__main__":
     print("Sudoku Puzzle:")
     print_grid(sudoku_grid)
 
-    if solve_sudoku(sudoku_grid):
-        print("\nSolved Sudoku:")
-        print_grid(sudoku_grid)
-    else:
-        print("No solution found for the given puzzle.")
+    
 
