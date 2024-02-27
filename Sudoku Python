@@ -1,21 +1,16 @@
 import random
 
-# Function to create an empty Sudoku grid
 def create_empty_grid():
     return [[0 for _ in range(9)] for _ in range(9)]
 
-# Function to print the Sudoku grid
 def print_grid(grid):
     for row in grid:
-        print(" ".join(map(str, row))
+        print(" ".join(map(str, row)))
 
-# Function to check if a number is valid in a specific cell
 def is_valid_move(grid, row, col, num):
-    # Check row and column
     if num in grid[row] or num in [grid[i][col] for i in range(9)]:
         return False
 
-    # Check 3x3 box
     box_row, box_col = 3 * (row // 3), 3 * (col // 3)
     for i in range(box_row, box_row + 3):
         for j in range(box_col, box_col + 3):
@@ -24,15 +19,13 @@ def is_valid_move(grid, row, col, num):
 
     return True
 
-# Function to generate a Sudoku puzzle
 def generate_sudoku(grid):
-    for _ in range(random.randint(17, 26)):  # Adjust the range for puzzle difficulty
+    for _ in range(random.randint(17, 26)):
         row, col, num = random.randint(0, 8), random.randint(0, 8), random.randint(1, 9)
         while not is_valid_move(grid, row, col, num) or grid[row][col] != 0:
             row, col, num = random.randint(0, 8), random.randint(0, 8), random.randint(1, 9)
         grid[row][col] = num
 
-# Function to solve Sudoku using backtracking
 def solve_sudoku(grid):
     for row in range(9):
         for col in range(9):
@@ -46,16 +39,38 @@ def solve_sudoku(grid):
                 return False
     return True
 
-if __name__ == "__main__":
+def play_sudoku():
     sudoku_grid = create_empty_grid()
     generate_sudoku(sudoku_grid)
 
     print("Sudoku Puzzle:")
     print_grid(sudoku_grid)
-if solve_sudoku(sudoku_grid):
-        print("\nSolved Sudoku:")
-        print_grid(sudoku_grid)
-    else:
-        print("No solution found for the given puzzle.")
-    
 
+    while True:
+        try:
+            row = int(input("Enter row (1-9) or 0 to exit: "))
+            if row == 0:
+                print("Exiting the game. Goodbye!")
+                break
+            col = int(input("Enter column (1-9): "))
+            num = int(input("Enter number (1-9): "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            continue
+
+        if 1 <= row <= 9 and 1 <= col <= 9 and 1 <= num <= 9:
+            if is_valid_move(sudoku_grid, row - 1, col - 1, num):
+                sudoku_grid[row - 1][col - 1] = num
+                print("\nUpdated Sudoku:")
+                print_grid(sudoku_grid)
+
+                if all(all(cell != 0 for cell in row) for row in sudoku_grid):
+                    print("Congratulations! You solved the Sudoku!")
+                    break
+            else:
+                print("Invalid move. Try again.")
+        else:
+            print("Invalid input. Please enter numbers between 1 and 9.")
+
+if __name__ == "__main__":
+    play_sudoku()
