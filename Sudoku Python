@@ -39,23 +39,55 @@ def solve_sudoku(grid):
                 return False
     return True
 
+def is_sudoku_solved(grid):
+    return all(all(cell != 0 for cell in row) for row in grid)
+
+def display_instructions():
+    print("Welcome to Sudoku!")
+    print("Fill the grid so that every row, column, and 3x3 box contains the numbers 1-9.")
+    print("Enter row, column, and number (separated by spaces) to place your move.")
+    print("Enter '0 0 0' to exit the game.")
+
+def choose_difficulty():
+    while True:
+        try:
+            difficulty = int(input("Choose difficulty level (1 - Easy, 2 - Medium, 3 - Hard): "))
+            if difficulty in [1, 2, 3]:
+                return difficulty
+            else:
+                print("Invalid input. Please enter 1, 2, or 3.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
 def play_sudoku():
+    display_instructions()
     sudoku_grid = create_empty_grid()
-    generate_sudoku(sudoku_grid)
+
+    difficulty = choose_difficulty()
+    if difficulty == 1:
+        generate_sudoku(sudoku_grid)
+    elif difficulty == 2:
+        generate_sudoku(sudoku_grid)
+        # Generate more numbers to make it easier
+        for _ in range(20):
+            row, col, num = random.randint(0, 8), random.randint(0, 8), random.randint(1, 9)
+            while sudoku_grid[row][col] != 0:
+                row, col = random.randint(0, 8), random.randint(0, 8)
+            sudoku_grid[row][col] = num
+    else:
+        solve_sudoku(sudoku_grid)
 
     print("Sudoku Puzzle:")
     print_grid(sudoku_grid)
 
     while True:
         try:
-            row = int(input("Enter row (1-9) or 0 to exit: "))
-            if row == 0:
+            row, col, num = map(int, input("Enter row, column, and number (1-9) or '0 0 0' to exit: ").split())
+            if row == 0 and col == 0 and num == 0:
                 print("Exiting the game. Goodbye!")
                 break
-            col = int(input("Enter column (1-9): "))
-            num = int(input("Enter number (1-9): "))
         except ValueError:
-            print("Invalid input. Please enter a number.")
+            print("Invalid input. Please enter three numbers separated by spaces.")
             continue
 
         if 1 <= row <= 9 and 1 <= col <= 9 and 1 <= num <= 9:
@@ -64,7 +96,7 @@ def play_sudoku():
                 print("\nUpdated Sudoku:")
                 print_grid(sudoku_grid)
 
-                if all(all(cell != 0 for cell in row) for row in sudoku_grid):
+                if is_sudoku_solved(sudoku_grid):
                     print("Congratulations! You solved the Sudoku!")
                     break
             else:
